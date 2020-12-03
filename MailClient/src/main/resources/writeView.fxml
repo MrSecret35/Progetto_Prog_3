@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="pannello" prefHeight="392.0" prefWidth="545.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MailClient.WriteController">
+   <children>
+      <Label fx:id="recivers" layoutX="131.0" layoutY="20.0" prefHeight="17.0" prefWidth="316.0" />
+        <Label layoutX="44.0" layoutY="53.0" text="Destinatario" />
+        <TextField fx:id="reciver" layoutX="131.0" layoutY="49.0" prefHeight="25.0" prefWidth="316.0" />
+        <Label layoutX="63.0" layoutY="94.0" text="Oggetto" />
+        <TextField fx:id="objectM" layoutX="131.0" layoutY="90.0" />
+        <Label layoutX="76.0" layoutY="139.0" text="Testo" />
+        <TextArea fx:id="text" layoutX="130.0" layoutY="139.0" prefHeight="209.0" prefWidth="374.0" />
+        <Button layoutX="463.0" layoutY="357.0" mnemonicParsing="false" onAction="#send" text="Invia" />
+        <Button layoutX="106.0" layoutY="357.0" mnemonicParsing="false" onAction="#home" text="Home" />
+      <Button layoutX="464.0" layoutY="49.0" mnemonicParsing="false" onAction="#addReciver" text="Add" />
+      <Button layoutX="463.0" layoutY="16.0" mnemonicParsing="false" onAction="#removeRecivers" prefHeight="25.0" prefWidth="64.0" text="Remove" />
+   </children>
+</AnchorPane>

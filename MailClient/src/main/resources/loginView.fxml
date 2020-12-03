@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<Pane prefHeight="181.0" prefWidth="222.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MailClient.LoginController">
+   <children>
+      <Label layoutX="74.0" layoutY="58.0" prefHeight="17.0" prefWidth="74.0" text="Inserisci Mail" />
+      <TextField fx:id="mailinput" layoutX="37.0" layoutY="84.0" />
+      <Button layoutX="82.0" layoutY="121.0" mnemonicParsing="false" onAction="#login" prefHeight="15.0" prefWidth="58.0" text="Login" />
+   </children>
+   <cursor>
+      <Cursor fx:constant="DEFAULT" />
+   </cursor>
+</Pane>
