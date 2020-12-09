@@ -10,30 +10,21 @@ public class MainClient extends Application {
     static Stage mainStage;
 
     static Scene homeS, loginS, readS, writeS;
+
     @Override
     public void start(Stage primaryStage) throws Exception{
         mainStage= primaryStage;
         primaryStage.setTitle("MailCenter");
-
-
 
         FXMLLoader loaderSceneLogin  = new FXMLLoader(getClass().getResource("/loginView.fxml"));
         FXMLLoader loaderSceneHome   = new FXMLLoader(getClass().getResource("/homeView.fxml"));
         FXMLLoader loaderSceneRead   = new FXMLLoader(getClass().getResource("/readView.fxml"));
         FXMLLoader loaderSceneWrite  = new FXMLLoader(getClass().getResource("/writeView.fxml"));
 
-
-        //Parent root = FXMLLoader.load(getClass().getResource("loginView.fxml"));
         loginS= new Scene(loaderSceneLogin.load());
         homeS  = new Scene(loaderSceneHome.load());
         readS  = new Scene(loaderSceneRead.load());
         writeS = new Scene(loaderSceneWrite.load());
-
-        /*FXMLLoader loaderScene = new FXMLLoader(getClass().getResource("serverView.fxml"));
-        serverScene = new Scene(loaderScene.load());
-        ServerController serverController = loaderScene.getController();
-         */
-
 
         LoginController loginController = loaderSceneLogin.getController();
         HomeController homeController   = loaderSceneHome.getController();

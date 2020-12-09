@@ -32,12 +32,14 @@ public class ReadController {
     @FXML
     public void reply(){
         Mail tmp = new Mail();
+        if(!model.getCurrentMail().getSender().equals(model.getAccount())){
+            tmp.setNewReciver(model.getCurrentMail().getSender());//set del mittente come destinatario
+            tmp.setText("Mail di Risposta:\n");
+            model.setCurrentMail(tmp);
 
-        tmp.setNewReciver(model.getCurrentMail().getSender());//set del mittente come destinatario
-        tmp.setText("Mail di Risposta:\n");
-        model.setCurrentMail(tmp);
+            MainClient.write();
+        }else ClientFunction.printError("Non puoi rispondere ad una tua mail");
 
-        MainClient.write();
     }
 
     /*
@@ -48,7 +50,7 @@ public class ReadController {
         Mail tmp = new Mail();
         tmp.setReciver(new ArrayList<>());
 
-        tmp.setReciver(model.getCurrentMail().getSender());
+        if (!model.getCurrentMail().getSender().equals(model.getAccount())) tmp.setReciver(model.getCurrentMail().getSender());
         for(String dest: model.getCurrentMail().getReciver()) {
             if (!dest.equals(model.getAccount()))
                 tmp.setReciver(dest);
@@ -97,10 +99,12 @@ public class ReadController {
         });
 
         //setEditable(false) essendo una lettura non e' possibile modificare gli attributi
+
         sender.setEditable(false);
         objectM.setEditable(false);
         text.setEditable(false);
-        reciver.setEditable(false);
+        //reciver.setEditable(false);
+
 
     }
 

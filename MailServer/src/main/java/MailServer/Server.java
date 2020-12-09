@@ -12,6 +12,7 @@ import org.json.JSONTokener;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -116,7 +117,7 @@ public class Server extends Thread {
 }
 
 /*
-* cclasse utilizata da Server per gestire le varie Richieste
+* classe utilizata da Server per gestire le varie Richieste
  */
 class ServerTask implements Runnable{
     ObservableList<String> logList;
@@ -125,8 +126,6 @@ class ServerTask implements Runnable{
 
     private String user;
 
-    ObjectOutputStream outStream;
-    ObjectInputStream inObjStream;
 
     Lock readLock , writelock;
 
@@ -142,15 +141,19 @@ class ServerTask implements Runnable{
     @Override
     public void run(){
         try {
+            ObjectInputStream inObjStream = null;
+            ObjectOutputStream outStream = null;
+
             try {
                 outStream = new ObjectOutputStream(incoming.getOutputStream());
                 inObjStream = new ObjectInputStream(incoming.getInputStream());
 
                 try {
-                    req = ((ServerRequest)inObjStream.readObject());
-                    user=req.getUser();
-                    wrtiteLog((new Date()).toString() + "\t" + user +"\t" + "Inizio comunicazione");
-                    //"LG" -> login();
+                    req = ((ServerRequest) inObjStream.readObject());
+                    user = req.getUser();
+                    wrtiteLog((new Date()).toString() + "\t" + user + "\t" + "Inizio comunicazione");
+
+                    //"CR" -> ClientRegistration();
                     switch (req.getRequest()) {
                         case "RM" -> readMail();
                         case "WM" -> writeMail();
@@ -161,12 +164,15 @@ class ServerTask implements Runnable{
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                } catch (ClassNotFoundException e) {System.out.println(e.getMessage());}
+                } catch (ClassNotFoundException e) {
+                    System.out.println(e.getMessage());
+                } catch (SocketException ignored) {
+                }
 
-            }finally {
-                wrtiteLog((new Date()).toString() + "\t" + user +"\tchiusura comunicazione");
-                inObjStream.close();
-                outStream.close();
+            } finally {
+                wrtiteLog((new Date()).toString() + "\t" + user + "\tchiusura comunicazione");
+                if (inObjStream != null) inObjStream.close();
+                if (outStream != null) outStream.close();
                 incoming.close();
             }
         }catch (IOException e) {e.printStackTrace();}
@@ -191,7 +197,7 @@ class ServerTask implements Runnable{
             }
         } catch (FileNotFoundException | JSONException e) {
             req.setErrNu(1);
-            req.setErrStr("Impossibile accederer ai Dati");
+            req.setErrStr("Impossibile accederer ai Dati\nServer momentaneamente indisponibile");
             e.printStackTrace();
         } finally {
             readLock.unlock();
@@ -238,6 +244,7 @@ class ServerTask implements Runnable{
                         m1=createJsonMail(tmp);
                     }
                 }
+
                 //scrivo la mail nel registro mail del mittente
                 try {
                     if(tmp.getReciver().size() != 0){
@@ -249,6 +256,7 @@ class ServerTask implements Runnable{
                     req.setErrNu(1);
                     req.setErrStr("Impossibile trovare l'utente desiderato\t" + user);
                 }
+
 
                 //agggiorno il nuovo ID
                 jsonObject.put("ID",ID+1);
@@ -278,7 +286,7 @@ class ServerTask implements Runnable{
     private void deleteMail(){
         wrtiteLog((new Date()).toString() + "\t" + user +"\t" + "Eliminazione mail");
         try{
-            writelock.lock();
+            writelock.lock();//ottengo il lock di scrittura
             Mail tmpMail = req.getMail();
 
             JSONObject jsonObject = new JSONObject(new JSONTokener(new FileInputStream("MailBox.json")));
@@ -308,17 +316,14 @@ class ServerTask implements Runnable{
     /*
      *converte gli elementi di un jsonArray in un arrayList java contenete della Mail
      */
-    public ArrayList<Mail> generateArrayList(JSONArray mailJ){
+    public ArrayList<Mail> generateArrayList(JSONArray mailJ) throws JSONException{
         ArrayList<Mail> mail= new ArrayList<>();
         for (int i = 0; i < mailJ.length(); i++){
-            try {
-                JSONObject tmp = mailJ.getJSONObject(i);
-                Mail mailtmp = generateMail(tmp);
 
-                mail.add(mailtmp);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            JSONObject tmp = mailJ.getJSONObject(i);
+            Mail mailtmp = generateMail(tmp);
+
+            mail.add(mailtmp);
         }
         return mail;
     }
@@ -361,21 +366,19 @@ class ServerTask implements Runnable{
      *genera l'oggetto Json corrispondente all'oggetto Mail passato come parametro
      * Mail tmp:  oggetto da convertire in Json
      */
-    private JSONObject createJsonMail(Mail tmp){
+    private JSONObject createJsonMail(Mail tmp) throws JSONException{
         JSONObject m1 = new JSONObject();
-        try{
-            m1.put("ID", tmp.getID());
-            m1.put("sender", tmp.getSender());
-            JSONArray rec1 = new JSONArray();
-            for (String dest: tmp.getReciver())
-                rec1.put(dest);
-            m1.put("reciver", rec1);
-            m1.put("object", tmp.getObject());
-            m1.put("text", tmp.getText());
-            m1.put("date", tmp.getDate());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
+        m1.put("ID", tmp.getID());
+        m1.put("sender", tmp.getSender());
+        JSONArray rec1 = new JSONArray();
+        for (String dest: tmp.getReciver())
+            rec1.put(dest);
+        m1.put("reciver", rec1);
+        m1.put("object", tmp.getObject());
+        m1.put("text", tmp.getText());
+        m1.put("date", tmp.getDate());
+
         return m1;
 
     }

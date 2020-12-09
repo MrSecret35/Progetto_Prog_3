@@ -2,6 +2,7 @@ package MailClient;
 
 import MailDataModel.Mail;
 import MailDataModel.ServerRequest;
+
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -117,7 +118,7 @@ public class HomeController {
                                 ArrayList<Mail> tmp = req.getMailList();
                                 Platform.runLater(() -> model.setMailList(tmp));
                             }
-                        }else ClientFunction.printInformation(req.getErrStr());
+                        }
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();

@@ -19,9 +19,6 @@ public class WriteController {
 
     @FXML
     public Label recivers;
-    
-    @FXML
-    public AnchorPane pannello;
 
     @FXML
     public TextField reciver;
@@ -39,12 +36,19 @@ public class WriteController {
             if(!model.getCurrentMail().getReciver().contains(rec)){
                 if(! model.getAccount().equals(rec)){
                     model.getCurrentMail().setReciver(rec);
-                    System.out.println(recivers.getText());
                     recivers.setText(model.getCurrentMail().getReciverString());
                 }else{ printError("Non puoi inviare una mail a te stesso"); }
             }else{ printError("Mail già inserita"); }
         }else{ printError("Mail non valida\t" + rec); }
         reciver.setText("");
+    }
+    @FXML
+    public void viewAllRecivers(){
+        String s="";
+        for (String tmp : model.getCurrentMail().getReciver()){
+            s += tmp + ";\n";
+        }
+        ClientFunction.printInformation(s);
     }
 
     @FXML
@@ -60,6 +64,7 @@ public class WriteController {
         if(reciver.textProperty().getValue().trim().length() != 0){
             addReciver();
         }
+
         if(verifyMailCamp(tmp)){
 
             ServerRequest req = new ServerRequest(model.getAccount(), 2);
@@ -122,5 +127,6 @@ public class WriteController {
                 tmp.getObject().length() != 0 &&
                 tmp.getText().length() != 0;
     }
+
 
 }

@@ -57,8 +57,11 @@ public class ClientFunction {
             String nomeHost = InetAddress.getLocalHost().getHostName();
             Socket acc = new Socket(nomeHost, 8189);
 
+            acc.setSoTimeout(2000);
+
             ObjectOutputStream outStream = new ObjectOutputStream(acc.getOutputStream());
             ObjectInputStream inStream = new ObjectInputStream(acc.getInputStream());
+
             try {
                 outStream.writeObject(req);
                 req = (ServerRequest) inStream.readObject();
@@ -72,7 +75,7 @@ public class ClientFunction {
             req.setErrStr("Problema con il client\n Si prega di riavviare il dispositivo");
         } catch (IOException e) {
             req.setErrNu(1);
-            req.setErrStr("Connessione al Server Instabile ");
+            req.setErrStr("Server momentaneamente offline\n Riprovare piu' tardi");
         } catch (ClassNotFoundException e) {
             //e.printStackTrace();
             req.setErrNu(1);

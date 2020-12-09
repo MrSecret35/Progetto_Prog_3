@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="pannello" prefHeight="392.0" prefWidth="545.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MailClient.WriteController">
+<Pane prefHeight="403.0" prefWidth="548.0" stylesheets="@css/myStyle.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MailClient.WriteController">
    <children>
       <Label fx:id="recivers" layoutX="131.0" layoutY="20.0" prefHeight="17.0" prefWidth="316.0" />
         <Label layoutX="44.0" layoutY="53.0" text="Destinatario" />
@@ -16,5 +16,6 @@
         <Button layoutX="106.0" layoutY="357.0" mnemonicParsing="false" onAction="#home" text="Home" />
       <Button layoutX="464.0" layoutY="49.0" mnemonicParsing="false" onAction="#addReciver" text="Add" />
       <Button layoutX="463.0" layoutY="16.0" mnemonicParsing="false" onAction="#removeRecivers" prefHeight="25.0" prefWidth="64.0" text="Remove" />
+      <Button layoutX="64.0" layoutY="16.0" mnemonicParsing="false" onAction="#viewAllRecivers" text="View All" />
    </children>
-</AnchorPane>
+</Pane>
