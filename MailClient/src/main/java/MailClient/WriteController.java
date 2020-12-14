@@ -94,10 +94,7 @@ public class WriteController {
             if(newMail != null){
                 objectM.setText(newMail.getObject());
                 text.setText(newMail.getText());
-                if(newMail.getReciver().size()==1){
-                    reciver.setText(newMail.getReciver().get(0));
-                    recivers.setText("");
-                }else if(newMail.getReciver().size()>1){
+                if(newMail.getReciver().size()>=1){
                     recivers.setText(newMail.getReciverString());
                     reciver.setText("");
                 }else{
@@ -112,8 +109,8 @@ public class WriteController {
             }
         });
 
-        objectM.textProperty().addListener((obs, oldObjectM, newObjectM) -> model.getCurrentMail().setObject(newObjectM));
-        text.textProperty().addListener((obs, oldtext, newtext) -> model.getCurrentMail().setText(newtext));
+        objectM.textProperty().addListener((obs, oldObjectM, newObjectM) -> {if(model.getCurrentMail()!=null) model.getCurrentMail().setObject(newObjectM);});
+        text.textProperty().addListener((obs, oldtext, newtext) -> {if(model.getCurrentMail()!=null) model.getCurrentMail().setText(newtext);});
     }
 
     /*

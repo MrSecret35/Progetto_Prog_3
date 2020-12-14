@@ -13,6 +13,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class HomeController {
@@ -112,18 +113,24 @@ public class HomeController {
                         req= ClientFunction.makeRequest(req);
                         if(req.getErrNu()==0){
                             //controllo se la dim della nuova lista mail differisce da quella gia' in possesso
-                            if(req.getMailList().size()!= model.getMailList().size()){
+                            if(req.getMailList().size()!= model.getMailList().size() && numMAilRec(req.getMailList()) != numMAilRec(model.getMailList())){
                                 Platform.runLater(() -> ClientFunction.printInformation("Nuova mail arrivata"));
-                                model.setCurrentMail(new Mail());
+                                //model.setCurrentMail(new Mail());
+                                Platform.runLater(() -> model.setCurrentMail(new Mail()));
                                 ArrayList<Mail> tmp = req.getMailList();
                                 Platform.runLater(() -> model.setMailList(tmp));
                             }
                         }
                     }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                } catch (InterruptedException ignored) {
                 }
             }
+        }
+
+        public int numMAilRec(List<Mail> tmp){
+            int res=0;
+            for(int i = 0; i< tmp.size(); i++ ) if(!tmp.get(i).getSender().equals(model.getAccount())) res++;
+            return res;
         }
     }
 

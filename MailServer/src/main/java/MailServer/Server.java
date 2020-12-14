@@ -26,12 +26,13 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 *classe chhe riceverà le richieste dei client e smistera' in un threadPool di ServerTask
  */
 public class Server extends Thread {
+
     static boolean serverFlag = false;
     static boolean serverInitFlag = true;
 
     ObservableList<String> logList;
 
-    private static final int NUM_THREAD = 10;
+    private static final int NUM_THREAD = 10;//numero di thread gestiti dalla threadPool
 
     ServerSocket serverSocket;
 
@@ -41,14 +42,14 @@ public class Server extends Thread {
     }
 
     public void run(){
-        //creo il pool
         wrtiteLog(new Date().toString() + "\tServer Ready");
+        //creo il threadPool
         ExecutorService threadPool = Executors.newFixedThreadPool(NUM_THREAD);
         try {
-            serverSocket = new ServerSocket(8189);
+            serverSocket = new ServerSocket(8189);//apro un socket
             serverSocket.setSoTimeout(8000);
 
-            ReadWriteLock rwl = new ReentrantReadWriteLock();
+            ReadWriteLock rwl = new ReentrantReadWriteLock();//Lock Lettore/Scrittore
             Lock rl = rwl.readLock();
             Lock wl = rwl.writeLock();
 
@@ -65,8 +66,8 @@ public class Server extends Thread {
                     try {
                         Socket incoming= serverSocket.accept();
 
-                        Runnable task = new ServerTask(incoming, rl, wl, logList);
-                        threadPool.execute(task);
+                        Runnable task = new ServerTask(incoming, rl, wl, logList);//creo una task
+                        threadPool.execute(task);//associo la nuova task alla pool
                     } catch(SocketTimeoutException ignored){}
                 }
             }
@@ -77,7 +78,6 @@ public class Server extends Thread {
         finally {
             threadPool.shutdown();
         }
-
     }
 
     /*
@@ -103,7 +103,6 @@ public class Server extends Thread {
         pauseBTN();
         serverInitFlag=false;
         wrtiteLog(new Date().toString() + "\tServer Quit...");
-
     }
 
     /*
@@ -125,7 +124,6 @@ class ServerTask implements Runnable{
     private final Socket incoming;
 
     private String user;
-
 
     Lock readLock , writelock;
 
@@ -165,7 +163,7 @@ class ServerTask implements Runnable{
                         e.printStackTrace();
                     }
                 } catch (ClassNotFoundException e) {
-                    System.out.println(e.getMessage());
+                    e.printStackTrace();
                 } catch (SocketException ignored) {
                 }
 
@@ -198,7 +196,7 @@ class ServerTask implements Runnable{
         } catch (FileNotFoundException | JSONException e) {
             req.setErrNu(1);
             req.setErrStr("Impossibile accederer ai Dati\nServer momentaneamente indisponibile");
-            e.printStackTrace();
+            //e.printStackTrace();
         } finally {
             readLock.unlock();
         }
@@ -240,8 +238,10 @@ class ServerTask implements Runnable{
                     }catch (JSONException e){
                         req.setErrNu(1);
                         req.setErrStr("Impossibile trovare l'utente desiderato\t" + dest);
+                        /*
                         tmp.getReciver().remove(dest);
                         m1=createJsonMail(tmp);
+                        */
                     }
                 }
 
@@ -274,7 +274,7 @@ class ServerTask implements Runnable{
         } catch (IOException | JSONException e) {
             req.setErrNu(1);
             req.setErrStr("Impossibile accederer ai Dati\t");
-            e.printStackTrace();
+            //e.printStackTrace();
         } finally {
             writelock.unlock();
         }
@@ -307,7 +307,7 @@ class ServerTask implements Runnable{
         } catch (IOException | JSONException e) {
             req.setErrNu(1);
             req.setErrStr("Impossibile accederer ai Dati");
-            e.printStackTrace();
+            //e.printStackTrace();
         }finally {
             writelock.unlock();
         }

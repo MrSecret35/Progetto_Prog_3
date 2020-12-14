@@ -29,7 +29,7 @@ public class DataModel {
 
     public ObservableList<Mail> getMailList() {return mailList;}
 
-    public void setMailList(ArrayList<Mail> tmp){
+    public synchronized void setMailList(ArrayList<Mail> tmp){
         mailList.setAll(tmp);
        // mailList= FXCollections.observableArrayList(tmp);
     }
@@ -44,7 +44,7 @@ public class DataModel {
         return currentMailProperty().get();
     }
 
-    public final void setCurrentMail(Mail mail) {
+    public final synchronized void setCurrentMail(Mail mail) {
         currentMailProperty().set(mail);
     }
 
